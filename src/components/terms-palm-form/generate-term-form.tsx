@@ -4,7 +4,7 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DeviceModel } from "./device-models";
 import { IoDocumentText } from "react-icons/io5";
-import { FaMobileScreen } from "react-icons/fa6";
+import { FaMobileScreen, FaSquareCheck  } from "react-icons/fa6";
 import { GrPowerReset } from "react-icons/gr";
 import { useForm } from "react-hook-form";
 import {
@@ -66,19 +66,29 @@ export function GenerateTermForm() {
   const generateTermForm = useForm<GenerateTermFormSchema>({
     resolver: zodResolver(generateTermFormSchema),
     defaultValues: {
-      employee: "Guilherme Andrade",
-      cpf: "62088379363",
-      deviceModel: "MOTO G8 PLAY",
-      componentsComputer: ["USB_CABLE"],
-      imeiSerialDevice: "111111111111111",
-      isBrokenScreen: true,
+      employee: "",
+      cpf: "",
+      deviceModel: "",
+      componentsComputer: [],
+      imeiSerialDevice: "",
+      isBrokenScreen: false,
     },
   });
 
   function handleSubmit(input: GenerateTermFormSchema) {
     toast("Termo gerado com sucesso!", {
+      icon: <FaSquareCheck className="text-[#010a41]" />,
       description: "Agora você pode baixar o termo de responsabilização.",
-      duration: 3000,
+      duration: 6000,
+      style: {
+        backgroundColor: "#f8f9fa",
+        color: "#010a41",
+        border: "1px solid #010a41",
+      },
+      action: {
+        label: "Fechar",
+        onClick: () => toast.dismiss(),
+      }
     });
 
     const {
@@ -114,16 +124,14 @@ export function GenerateTermForm() {
       newTab.document.close();
     }
 
-    // generateTermForm.reset({
-    //   employee: "",
-    //   cpf: "",
-    //   deviceModel: "",
-    //   imeiSerialDevice: "",
-    //   componentsComputer: [],
-    //   isBrokenScreen: false,
-    // });
-
-    toast.dismiss();
+    generateTermForm.reset({
+      employee: "",
+      cpf: "",
+      deviceModel: "",
+      imeiSerialDevice: "",
+      componentsComputer: [],
+      isBrokenScreen: false,
+    });
   };
 
   function handleResetFields() {
