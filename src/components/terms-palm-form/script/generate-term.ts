@@ -17,7 +17,7 @@ export function generateTermPdf(input: TermInput) {
   const month = new Intl.DateTimeFormat('pt-BR', { month: 'long' }).format(currentDate);
   const year = currentDate.getFullYear();
 
-  const TERMS = `
+  return`
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -28,43 +28,44 @@ export function generateTermPdf(input: TermInput) {
   <style>
     body {
       font-family: 'Nunito', sans-serif;
-      font-size: 14px;
+      font-size: 16px;
       color: #333;
       background-color: #f9f9f9;
-      padding: 2rem;
-      line-height: 1.6;
+      padding: 1rem;
+      line-height: 1.5;
     }
     .container {
       background-color: #fff;
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      padding: 2rem;
-      max-width: 900px;
+      padding: 1.5rem;
+      max-width: 800px;
       margin: auto;
+      position: relative;
     }
     .logo {
-      width: 8rem;
+      width: 6rem;
       display: block;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1rem;
     }
     .title {
       text-align: center;
-      font-size: 1.2rem;
+      font-size: 1rem;
       font-weight: bold;
-      margin-bottom: 2rem;
+      margin-bottom: 1.5rem;
       text-transform: uppercase;
       color: #222;
     }
     .equipment-box {
       border: 1px solid #ccc;
       border-radius: 8px;
-      padding: 1.5rem;
-      margin: 1.5rem 0;
+      padding: 1rem;
+      margin: 1rem 0;
       background-color: #fefefe;
       text-align: center;
     }
     .terms-list {
-      margin-left: 1.5rem;
+      margin-left: 1rem;
     }
     .signature {
       text-align: center;
@@ -73,12 +74,55 @@ export function generateTermPdf(input: TermInput) {
       text-decoration: overline;
     }
     .return-box {
-      margin-top: 3rem;
-      padding: 1rem;
+      margin-top: 2rem;
+      padding: 0.75rem;
       background-color: #f1f1f1;
       border-radius: 8px;
       border: 1px dashed #ccc;
       text-align: center;
+    }
+    .footer {
+      font-size: 11px;
+      color: #666;
+      text-align: center;
+      margin-top: 2rem;
+      border-top: 1px solid #ccc;
+      padding-top: 0.5rem;
+    }
+    @media print {
+      body {
+        padding: 0;
+        background-color: #fff;
+        font-size: 12px;
+      }
+      .container {
+        box-shadow: none;
+        padding: 1rem;
+        margin: 0;
+        max-width: 100%;
+      }
+      .equipment-box, .return-box {
+        margin: 1rem 0;
+        padding: 0.75rem;
+      }
+      .title {
+        font-size: 0.95rem;
+        margin-bottom: 1rem;
+      }
+      .signature {
+        margin-top: 1.5rem;
+      }
+      .terms-list {
+        margin-left: 1rem;
+      }
+      .footer {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        font-size: 10px;
+        background-color: #fff;
+        padding: 0.25rem;
+      }
     }
   </style>
 </head>
@@ -122,7 +166,7 @@ export function generateTermPdf(input: TermInput) {
       <li>Ao término do contrato, o equipamento deverá ser devolvido em perfeito estado.</li>
     </ol>
 
-    <p style="margin-top: 2rem;">Fortaleza - CE, ${day} de ${month} de ${year}</p>
+    <p style="margin-top: 1.5rem;">Fortaleza - CE, ${day} de ${month} de ${year}</p>
 
     <div class="signature">
       Nome do Responsável pelo equipamento
@@ -138,12 +182,16 @@ export function generateTermPdf(input: TermInput) {
     <div class="signature">
       Nome do Responsável pelo RECEBIMENTO do equipamento
     </div>
+
+    <div class="footer">
+      ALVOAR LÁCTEOS NORDESTE S/A | CNPJ: 10.483.444/0001-89<br>
+      Rua Carlos Câmara, 1454, Jardim América, Fortaleza – CE, CEP: 60425-810<br>
+      Contato: (85) 4002-8922 | suporte@alvoarlacteos.com.br<br>
+      Termo gerado em ${new Date().toLocaleString('pt-BR')}
+    </div>
   </div>
 </body>
 </html>`;
-
-
-  return TERMS;
 }
 
 function formatComponents(components: ComponentsComputerOptionLabel[]): string {
@@ -155,7 +203,7 @@ function formatComponents(components: ComponentsComputerOptionLabel[]): string {
 function generateConditionScreenBroken(screenBroken: boolean): string {
   if (!screenBroken) return ''
 
-  return `<br><strong>Condições: PALM COM A TELA TRINCADA</strong></br>`
+  return `<strong>Condições: PALM COM A TELA TRINCADA</strong>`
 }
 
 function sanitizeCpf(cpf: string) {

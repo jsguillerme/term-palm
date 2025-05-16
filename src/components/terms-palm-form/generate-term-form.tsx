@@ -41,25 +41,21 @@ import { Switch } from "../ui/switch";
 import { generateTermPdf } from "./script/generate-term";
 import { toast } from "sonner";
 
-const MESSAGE_NOEMPTY_EMPLOYEE = "Employee name cannot be empty";
-const MESSAGE_NOEMPTY_CPF = "CPF cannot be empty";
-const MESSAGE_NOEMPTY_DEVICE_MODEL = "Device model cannot be empty";
-const MESSAGE_NOEMPTY_IMEI_SERIAL_DEVICE = "IMEI/Serial device cannot be empty";
-
 const generateTermFormSchema = z.object({
   employee: z
     .string()
-    .nonempty({ message: MESSAGE_NOEMPTY_EMPLOYEE })
-    .min(3, { message: "Employee name must be at least 3 characters long" }),
+    .nonempty({ message: "É obrigatório adicionar um funcionário!" })
+    .min(3, { message: "O funcionário precisa ter um nome maior que 3 caracteres!" }),
   cpf: z
     .string()
-    .nonempty({ message: MESSAGE_NOEMPTY_CPF })
-    .length(11, { message: "CPF must be exactly 11 characters long" }),
-  deviceModel: z.string().nonempty({ message: MESSAGE_NOEMPTY_DEVICE_MODEL }),
+    .nonempty({ message: "É obrigatório adicionar um CPF!" })
+    .regex(/^\d+$/, { message: "O CPF precisa ser apenas números!" })
+    .length(11, { message: "O CPF deve conter apenas 11 caracteres!" }),
+  deviceModel: z.string().nonempty({ message: "É obrigatório adicionar um modelo de dispositivo!" }),
   imeiSerialDevice: z
     .string()
-    .nonempty({ message: MESSAGE_NOEMPTY_IMEI_SERIAL_DEVICE })
-    .length(15, { message: "IMEI/Serial device must be exactly 15 characters long" }),
+    .nonempty({ message: "É obrigatório adicionar um IMEI/Série do dispositivo!" })
+    .length(15, { message: "O IMEI deve conter apenas 15 caracteres!" }),
   componentsComputer: z.array(z.string()),
   isBrokenScreen: z.boolean().default(false).optional(),
 });
@@ -70,12 +66,12 @@ export function GenerateTermForm() {
   const generateTermForm = useForm<GenerateTermFormSchema>({
     resolver: zodResolver(generateTermFormSchema),
     defaultValues: {
-      employee: "",
-      cpf: "",
-      deviceModel: "",
-      componentsComputer: [],
-      imeiSerialDevice: "",
-      isBrokenScreen: false,
+      employee: "Guilherme Andrade",
+      cpf: "62088379363",
+      deviceModel: "MOTO G8 PLAY",
+      componentsComputer: ["USB_CABLE"],
+      imeiSerialDevice: "111111111111111",
+      isBrokenScreen: true,
     },
   });
 
@@ -118,14 +114,14 @@ export function GenerateTermForm() {
       newTab.document.close();
     }
 
-    generateTermForm.reset({
-      employee: "",
-      cpf: "",
-      deviceModel: "",
-      imeiSerialDevice: "",
-      componentsComputer: [],
-      isBrokenScreen: false,
-    });
+    // generateTermForm.reset({
+    //   employee: "",
+    //   cpf: "",
+    //   deviceModel: "",
+    //   imeiSerialDevice: "",
+    //   componentsComputer: [],
+    //   isBrokenScreen: false,
+    // });
 
     toast.dismiss();
   };
