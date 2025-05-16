@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { DeviceModel } from "./device-models";
 import { IoDocumentText } from "react-icons/io5";
 import { FaMobileScreen } from "react-icons/fa6";
+import { GrPowerReset } from "react-icons/gr";
 import { useForm } from "react-hook-form";
 import {
   LuChevronsUpDown,
@@ -36,9 +37,10 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
 import { ComponentsComputerOptions } from "./components";
-import { toast } from "sonner";
 import { Checkbox } from "../ui/checkbox";
 import { Switch } from "../ui/switch";
+import { generateTermPdf } from "./script/generate-term";
+import { toast } from "sonner";
 
 const MESSAGE_NOEMPTY_EMPLOYEE = "Employee name cannot be empty";
 const MESSAGE_NOEMPTY_CPF = "CPF cannot be empty";
@@ -72,22 +74,73 @@ export function GenerateTermForm() {
       employee: "",
       cpf: "",
       deviceModel: "",
-      imeiSerialDevice: "",
       componentsComputer: [],
+      imeiSerialDevice: "",
       isBrokenScreen: false,
     },
   });
 
-  function handleSubmit(data: GenerateTermFormSchema) {
+  function handleSubmit(input: GenerateTermFormSchema) {
     toast("Termo gerado com sucesso!", {
-      description: (
-        <pre className="mt-2 w-[310px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-      duration: 7000,
+      description: "Agora você pode baixar o termo de responsabilização.",
+      duration: 3000,
     });
+
+    const {
+      componentsComputer,
+      cpf,
+      deviceModel,
+      employee,
+      imeiSerialDevice,
+      isBrokenScreen } = input;
+
+    const pdfHtml = generateTermPdf({
+      cpf: cpf,
+      deviceModel: deviceModel,
+      employee: employee,
+      imeiSerialDevice: imeiSerialDevice,
+      isBrokenScreen: isBrokenScreen || false,
+      components: componentsComputer ? componentsComputer.map((component) => component) : [] as any,
+    });
+
+    // const blob = new Blob([PDF], { type: "application/pdf" });
+    // const url = URL.createObjectURL(blob);
+    // const a = document.createElement("a");
+    // a.href = url;
+    // a.download = `Termo de Responsabilização - ${employee}.pdf`;
+    // document.body.appendChild(a);
+    // a.click();
+    // document.body.removeChild(a);
+    // URL.revokeObjectURL(url);
+
+    const newTab = window.open();
+    if (newTab) {
+      newTab.document.body.innerHTML = pdfHtml;
+      newTab.document.close();
+    }
+
+    generateTermForm.reset({
+      employee: "",
+      cpf: "",
+      deviceModel: "",
+      imeiSerialDevice: "",
+      componentsComputer: [],
+      isBrokenScreen: false,
+    });
+
+    toast.dismiss();
   };
+
+  function handleResetFields() {
+    generateTermForm.reset({
+      employee: "",
+      cpf: "",
+      deviceModel: "",
+      imeiSerialDevice: "",
+      componentsComputer: [],
+      isBrokenScreen: false,
+    })
+  }
 
   return (
     <Form {...generateTermForm}>
@@ -255,10 +308,16 @@ export function GenerateTermForm() {
             </div>
           )}
         />
-        <Button type="submit" className="hover:cursor-pointer">
-          <IoDocumentText className="mr-2" />
-          Gerar Termo
-        </Button >
+        <div className="flex justify-between">
+          <Button type="submit" className="hover:cursor-pointer bg-emerald-700 hover:bg-emerald-600 transition-all duration-300">
+            <IoDocumentText className="mr-2" />
+            Gerar Termo
+          </Button >
+          <Button type="button" className="hover:cursor-pointer bg-red-800 hover:bg-red-700 transition-all duration-300" onClick={handleResetFields}>
+            <GrPowerReset className="mr-2" />
+            Reiniciar
+          </Button >
+        </div>
       </form >
     </Form >
   )

@@ -4,3 +4,5 @@ export const ComponentsComputerOptions = [
   { id: "CHIP", label: "Chip" },
   { id: "SIMCARD_SLOT_KEY", label: "Chave slot do SIMCARD" }
 ] as const;
+
+export type ComponentsComputerOptionLabel = typeof ComponentsComputerOptions[number]['id'];
