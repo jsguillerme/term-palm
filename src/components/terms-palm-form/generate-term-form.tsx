@@ -319,7 +319,7 @@ export function GenerateTermForm() {
             <IoDocumentText className="mr-2" />
             Gerar Termo
           </Button >
-          <Button type="button" className="hover:cursor-pointer bg-red-600 hover:bg-red-700 transition-all duration-300" onClick={handleResetFields}>
+          <Button type="button" className="hover:cursor-pointer bg-secondary-foreground transition-all duration-300" onClick={handleResetFields}>
             <GrPowerReset className="mr-2" />
             Reiniciar
           </Button >
